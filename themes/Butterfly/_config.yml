@@ -100,11 +100,11 @@ google_analytics:
 
 # Post info settings
 # ---------------
-# avatar: /img/avatar.png
-avatar: https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/Photo/avatar.png
+avatar: /img/avatar.png
 
 # the banner image of index
-top_img: https://i.loli.net/2019/05/22/5ce53eb6dc82757840.jpg
+top_img: /img/top_img.png
+# top_img: https://i.loli.net/2019/05/22/5ce53eb6dc82757840.jpg
 # 以下鏈接是動態壁紙，每次刷新會更換
 # https://source.unsplash.com/collection/collectionid/1600x900
 # https://uploadbeta.com/api/pictures/random/?key=BingEverydayWallpaperPicture
@@ -361,7 +361,7 @@ click_heart:
 # 點擊出現文字，文字可自行修改
 ClickShowText:
   enable: false
-  text: 
+  text:
     - 富强
     - 民主
     - 文明
@@ -410,10 +410,10 @@ hr:
 
 # 主頁subtitle
 # 打字效果
-subtitle: 
+subtitle:
   enable: true
   # source調用第三方服務
-  # source: false 關閉調用 
+  # source: false 關閉調用
   # source: 1  調用金山詞霸的每日一句（簡體）
   # source: 2  調用一言网的一句話（簡體） #https://hitokoto.cn/
   # source: 3  調用一句网（簡體） http://yijuzhan.com/
@@ -598,7 +598,7 @@ CDN:
   # 背景特效
   canvas_ribbon: /js/third-party/canvas-ribbon.js # https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@latest/js/canvas-ribbon.js
   canvas_ribbon_piao: /js/third-party/piao.js # https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@latest/js/piao.js
-  canvas_nest: /js/third-party/canvas-nest.js  # https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@latest/js/canvas-nest.js 
+  canvas_nest: /js/third-party/canvas-nest.js  # https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@latest/js/canvas-nest.js
 
   lazyload: https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js
   instantpage: https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js
