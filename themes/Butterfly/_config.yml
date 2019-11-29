@@ -258,7 +258,7 @@ Flink:
   name: Blog 名字： JerryC
   address: Blog 地址： https://jerryc.me/
   avatar: Blog 頭像： https://jerryc.me/img/avatar.png
-  info: Blog 簡介： 今日事,今日畢
+  info: Blog 簡介： 今日事,今日毕
   comment: 如果需要交換友鏈,請留言
 
 # 打賞按鈕
@@ -422,7 +422,7 @@ subtitle:
   source: false
   # (如果有英文逗號' , '，請使用轉義字符 &#44;)
   sub:
-    - 今日事&#44;今日畢
+    - 今日事&#44;今日毕
     - Never put off till tomorrow what you can do today
 
 
