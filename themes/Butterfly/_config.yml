@@ -118,7 +118,7 @@ default_top_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/top_img_index.jpg
 default_cover: https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png
 
 # the banner image of archive page
-archive_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/Photo/archive.jpg
+archive_img: /img/top_ar.jpg
 
 # the banner image of tag page
 tag_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/tag-bg.png
