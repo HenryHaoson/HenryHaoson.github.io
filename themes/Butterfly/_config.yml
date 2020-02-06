@@ -111,7 +111,7 @@ top_img: /img/top_img.png
 # https://api.dujin.org/bing/1366.php
 
 # if the banner of page not setting,it will show the top_img
-default_top_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/top_img_index.jpg
+default_top_img: https://github.com/HenryHaoson/HenryHaoson.github.io/blob/source/source/images/default_bg.jpeg
 
 # the default cover of the post
 default_cover: https://github.com/HenryHaoson/HenryHaoson.github.io/blob/source/source/images/default_bg.jpeg
