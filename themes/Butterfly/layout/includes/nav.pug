@@ -5,18 +5,18 @@
 if is_home()
   nav#nav.full_page
     .nav_bg(style=bg_img)
-    #site-info
+    #site-info1
       #site-title
         span.blogtitle= page.title || page.tag || page.category || config.title
       #site-sub-title
         span.subtitle
-        
+
       if(theme.social)
         #site-social-icons
           each url, icon in theme.social
             a.social-icon(href=url target="_blank")
               i(class=icon)
-      
+
     .scroll-down
       i.fa.fa-angle-down.scroll-down-effects
 
@@ -25,7 +25,7 @@ else
     .nav_bg(style=bg_img)
     #page_site-info
       #site-title
-          if (is_archive()) 
+          if (is_archive())
             span.blogtitle= _p('archives')
           else
             span.blogtitle= page.title || page.tag || page.category || config.title
