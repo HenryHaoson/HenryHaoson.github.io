@@ -114,7 +114,7 @@ top_img: /img/top_img.png
 default_top_img: https://cdn.jsdelivr.net/gh/jerryc127/CDN/img/top_img_index.jpg
 
 # the default cover of the post
-default_cover: https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png
+default_cover: https://github.com/HenryHaoson/HenryHaoson.github.io/blob/source/source/images/default_bg.jpeg
 
 # the banner image of archive page
 archive_img: /img/top_ar.jpg
