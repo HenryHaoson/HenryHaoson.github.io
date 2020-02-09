@@ -381,6 +381,14 @@ HISTOGRAM ...
         -   窗口布局发生变化（例如，应用的第一帧或在旋转后）
         -   此外，如果帧的某些值包含无意义的时间戳，则也可能跳过该帧。例如，如果帧的运行速度超过 60fps，或者如果屏幕上的所有内容最终都准确无误，则可能跳过该帧，这不一定表示应用中存在问题。
 
+-   INTENDED_VSYNC
+
+    -   帧的预期起点。如果此值不同于 VSYNC，则表示界面线程中发生的工作使其无法及时响应垂直同步信号。
+
+-   VSYNC
+
+    -   所有垂直同步侦听器中使用的时间值和帧绘图（Choreographer 帧回调、动画、View.getDrawingTime() 等等）
+
 -   ANIMATION_START
 
     -   在 Choreographer 中注册的动画运行的时间戳。
@@ -414,4 +422,5 @@ HISTOGRAM ...
 -   FRAME_COMPLETED
     -   大功告成！处理此帧所花的总时间可以通过执行 FRAME_COMPLETED - INTENDED_VSYNC 计算得出。
 
+以开屏页为例
 未完～
