@@ -5,27 +5,30 @@ date: 2020-2-5
 categories: blog
 tags: [android]
 description: 简单了解Android APM的检测点
+cover: https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/nana1.jpg
 ---
 
 ### APM（Appclication Performance Management）检测点
-- 显示性能指标
-- cpu使用
-- 内存使用
-- 网络请求
-- 耗电情况
+
+-   显示性能指标
+-   cpu 使用
+-   内存使用
+-   网络请求
+-   耗电情况
 
 ### 显示性能指标
-- FPS（frames per second）
+
+-   FPS（frames per second）
 
 #### FPS
 
 这个指标是指一秒多少帧，在一般应用软件中可以通过这个可以来判断是否显示卡顿，游戏类的低帧数可以通过动态模糊技术优化。
 
-android中每隔16ms后进行一次绘制，如果你的绘制时间超过16ms就会出现卡顿的情况。
+android 中每隔 16ms 后进行一次绘制，如果你的绘制时间超过 16ms 就会出现卡顿的情况。
 
-那么Android中如何检测你每一帧的绘制时间呢
+那么 Android 中如何检测你每一帧的绘制时间呢
 
-开发调试的时候可以使用dumpsys工具
+开发调试的时候可以使用 dumpsys 工具
 
 Android 6.0 附带提供了一个适用于 gfxinfo 的新命令，即：framestats，该命令根据最近的帧提供非常详细的帧时间信息。
 
@@ -331,6 +334,7 @@ threadConfig: {1.0 460mcc7mnc [zh_CN_#Hans] ldltr sw360dp w360dp h668dp 480dpi n
 
 
 ```
+
 首先来康康总体的数据
 
 ```
@@ -351,15 +355,27 @@ HISTOGRAM ...
 
 ```
 
-- total frames 就是绘制的总帧数。
-- janky frame 是认为卡顿的帧数（也就是没有在16ms绘制完成的帧数）
-- Number Missed Vsync 垂直同步失败的帧（这个是用户真正感到卡顿的原因）
-- Number High input latency 由于input导致绘制超时的帧数
-- Number Slow UI thread 由于UI线程绘制超时的帧数
-- Number Slow bitmap uploads 由于加载bitmap导致绘制超时的帧数
-- Number Slow issue draw commands 由于绘制超时导致耗时的帧数
-- HISTOGRAM 耗时数据
-> 5ms=59 6ms=5 7ms=19 8ms=26 9ms=6 10ms=10 11ms=5 12ms=0 13ms=1 14ms=0 15ms=0 16ms=1 17ms=1 18ms=0 19ms=2 20ms=0 21ms=0 22ms=1 23ms=1 24ms=0 25ms=0 26ms=0 27ms=0 28ms=0 29ms=0 30ms=0 31ms=0 32ms=0 34ms=0 36ms=0 38ms=0 40ms=0 42ms=0 44ms=0 46ms=0 48ms=0 53ms=0 57ms=1 61ms=0 65ms=0 69ms=0 73ms=0 77ms=0 81ms=0 85ms=0 89ms=0 93ms=0 97ms=1 101ms=0 105ms=0 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=0 200ms=0 250ms=1 300ms=0 350ms=1 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=1 800ms=2 850ms=0 900ms=0 950ms=1 1000ms=1
-> 理论上超过16ms的就是不正常的帧
+-   total frames 就是绘制的总帧数。
+-   janky frame 是认为卡顿的帧数（也就是没有在 16ms 绘制完成的帧数）
+-   Number Missed Vsync 垂直同步失败的帧（这个是用户真正感到卡顿的原因）
+-   Number High input latency 由于 input 导致绘制超时的帧数
+-   Number Slow UI thread 由于 UI 线程绘制超时的帧数
+-   Number Slow bitmap uploads 由于加载 bitmap 导致绘制超时的帧数
+-   Number Slow issue draw commands 由于绘制超时导致耗时的帧数
+-   HISTOGRAM 耗时数据
+    > 5ms=59 6ms=5 7ms=19 8ms=26 9ms=6 10ms=10 11ms=5 12ms=0 13ms=1 14ms=0 15ms=0 16ms=1 17ms=1 18ms=0 19ms=2 20ms=0 21ms=0 22ms=1 23ms=1 24ms=0 25ms=0 26ms=0 27ms=0 28ms=0 29ms=0 30ms=0 31ms=0 32ms=0 34ms=0 36ms=0 38ms=0 40ms=0 42ms=0 44ms=0 46ms=0 48ms=0 53ms=0 57ms=1 61ms=0 65ms=0 69ms=0 73ms=0 77ms=0 81ms=0 85ms=0 89ms=0 93ms=0 97ms=1 101ms=0 105ms=0 109ms=0 113ms=0 117ms=0 121ms=0 125ms=0 129ms=0 133ms=0 150ms=0 200ms=0 250ms=1 300ms=0 350ms=1 400ms=0 450ms=0 500ms=0 550ms=0 600ms=0 650ms=0 700ms=0 750ms=1 800ms=2 850ms=0 900ms=0 950ms=1 1000ms=1
+    > 理论上超过 16ms 的就是不正常的帧
 
+接下来就来看每一帧的数据
 
+这个数据格式称作 Framestats
+
+具体的对应字段的意义可以看[官方文档]("https://developer.android.com/training/testing/performance")
+
+这里提取几个我比较关心的点
+
+-   FLAGS
+    -   FLAGS 列为“0”的行可以通过从 FRAME_COMPLETED 列中减去 INTENDED_VSYNC 列计算得出总帧时间。
+    -   该列为非零值的行将被忽略，因为其对应的帧已被确定为偏离正常性能，其布局和绘制时间预计超过 16 毫秒。可能出现这种情况有如下几个原因：
+        -   窗口布局发生变化（例如，应用的第一帧或在旋转后）
+        -   此外，如果帧的某些值包含无意义的时间戳，则也可能跳过该帧。例如，如果帧的运行速度超过 60fps，或者如果屏幕上的所有内容最终都准确无误，则可能跳过该帧，这不一定表示应用中存在问题。
