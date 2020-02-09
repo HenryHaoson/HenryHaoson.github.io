@@ -375,9 +375,43 @@ HISTOGRAM ...
 这里提取几个我比较关心的点
 
 -   FLAGS
+
     -   FLAGS 列为“0”的行可以通过从 FRAME_COMPLETED 列中减去 INTENDED_VSYNC 列计算得出总帧时间。
     -   该列为非零值的行将被忽略，因为其对应的帧已被确定为偏离正常性能，其布局和绘制时间预计超过 16 毫秒。可能出现这种情况有如下几个原因：
         -   窗口布局发生变化（例如，应用的第一帧或在旋转后）
         -   此外，如果帧的某些值包含无意义的时间戳，则也可能跳过该帧。例如，如果帧的运行速度超过 60fps，或者如果屏幕上的所有内容最终都准确无误，则可能跳过该帧，这不一定表示应用中存在问题。
+
+-   ANIMATION_START
+
+    -   在 Choreographer 中注册的动画运行的时间戳。
+    -   通过观察此时间戳与 PERFORM_TRANVERSALS_START 之间的时差，可以确定评估正在运行的所有动画（常见动画有 ObjectAnimator、ViewPropertyAnimator 和 Transitions）所需的时间。
+    -   如果这个数字较高（> 2 毫秒），请检查您的应用是否编写了任何自定义动画，或检查 ObjectAnimator 在对哪些字段设置动画并确保它们适用于动画
+
+-   PERFORM_TRAVERSALS_START
+
+    -   如果您从此值中减去 DRAW_START，则可推断出完成布局和测量阶段所需的时间（请注意，在滚动或动画期间，您会希望此时间接近于零）。
+
+-   DRAW_START
+
+    -   performTraversals 绘制阶段的开始时间。这是记录任何失效视图的显示列表的起点。
+    -   此时间与 SYNC_START 之间的时差就是对树中的所有失效视图调用 View.draw() 所需的时间。
+
+-   SYNC_QUEUED
+
+    -   将同步请求发送给 RenderThread 的时间。
+    -   它标记的是将开始同步阶段的消息发送给 RenderThread 的时间点。如果该时间点与 SYNC_START 的时间差较大（约 > 0.1 毫秒），则意味着 RenderThread 正忙于处理另一帧。它在内部用于区分该帧是因作业负荷过大而超过了 16 毫米的预算时间，还是该帧由于上一帧超过 16 毫秒的预算时间而停止。
+
+-   SYNC_START
+
+    -   绘制同步阶段的开始时间。
+    -   如果此时间与 ISSUE_DRAW_COMMANDS_START 之间的时间差较大（约 > 0.4 毫秒），则通常表示绘制了大量必须上传到 GPU 的新位图。
+
+-   ISSUE_DRAW_COMMANDS_START
+
+    -   硬件呈现器开始向 GPU 发出绘图命令的时间。
+    -   此时间与 FRAME_COMPLETED 之间的时间差让您可以大致了解应用生成的 GPU 工作量。绘制过度或渲染效果不佳等问题都会在此显示出来。
+
+-   FRAME_COMPLETED
+    -   大功告成！处理此帧所花的总时间可以通过执行 FRAME_COMPLETED - INTENDED_VSYNC 计算得出。
 
 未完～
