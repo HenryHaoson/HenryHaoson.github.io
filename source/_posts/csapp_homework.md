@@ -4,7 +4,7 @@ title: csapp 作业
 date: 2019-10-16
 categories: blog
 tags: [csapp]
-description: 简单了解Android APM的检测点
+description: 练习
 cover: https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/nana0.png
 ---
 
