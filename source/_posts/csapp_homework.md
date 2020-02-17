@@ -1,9 +1,9 @@
 ---
 layout: post
 title: Android APM
-date: 2020-2-5
+date: 2019-10-16
 categories: blog
-tags: [android]
+tags: [csapp]
 description: 简单了解Android APM的检测点
 cover: https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/nana0.png
 ---
