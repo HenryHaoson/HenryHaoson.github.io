@@ -3,33 +3,33 @@ layout: post
 title: 搭建自己的fragment库，管理自己的fragment栈
 date: 2016-10-10
 categories: blog
-tags: [android]
+tags: [Android]
 description: 搭建自己的fragment库，管理自己的fragment栈
-
 ---
 
-想彻底了解fragment和避免踩坑的同学可以看看这三篇文章
+想彻底了解 fragment 和避免踩坑的同学可以看看这三篇文章
 http://www.jianshu.com/p/d9143a92ad94
 http://www.jianshu.com/p/fd71d65f0ec6
 http://www.jianshu.com/p/38f7994faa6b
-看过此人写的三篇文章和所搭建的fragment库后我也决定搭一个自己的fragment库（特别适用于单activity多fragment)。
-我为了跳过不必要踩的坑，所以在搭建的时候使用自己管理的fragment栈（这不是造轮子！）。这样妈妈再也不用担心你的fragment栈出现嵌套问题啦。
+看过此人写的三篇文章和所搭建的 fragment 库后我也决定搭一个自己的 fragment 库（特别适用于单 activity 多 fragment)。
+我为了跳过不必要踩的坑，所以在搭建的时候使用自己管理的 fragment 栈（这不是造轮子！）。这样妈妈再也不用担心你的 fragment 栈出现嵌套问题啦。
 首先想到搭一个库，肯定要用户友好型啊。那我们就定义几个方便的方法。
 
-1.loadfragment（int containerId,SupportFragment fragment），在activity里面加载主fragment（第一层fragment）其中containerId是显示fragment布局资源id，fragment就是要加载的fragment。
+1.loadfragment（int containerId,SupportFragment fragment），在 activity 里面加载主 fragment（第一层 fragment）其中 containerId 是显示 fragment 布局资源 id，fragment 就是要加载的 fragment。
 
-2.loadfragments(int containerId,int position,SupportFragment  ...fragments)，大家应该都用过类似qq的底部导航栏布局吧，每个导航按钮对应的页面是用fragment来实现的，这样的函数就是用来一次性加载多个fragment。其中containerId同上，position是第一次加载时显示的是第几个fragment，fragments就是要加载的fragment们。
+2.loadfragments(int containerId,int position,SupportFragment ...fragments)，大家应该都用过类似 qq 的底部导航栏布局吧，每个导航按钮对应的页面是用 fragment 来实现的，这样的函数就是用来一次性加载多个 fragment。其中 containerId 同上，position 是第一次加载时显示的是第几个 fragment，fragments 就是要加载的 fragment 们。
 
-3.startfragment（int containerId,SupportFragment fragment),这个方法是用来加载一些使用频率较少的一些fragment。由activity执行。
+3.startfragment（int containerId,SupportFragment fragment),这个方法是用来加载一些使用频率较少的一些 fragment。由 activity 执行。
 
-4.close(SupportFragment fragment),这个函数是用来删除嵌套的子fragment。
+4.close(SupportFragment fragment),这个函数是用来删除嵌套的子 fragment。
 
-5 .close（），这个函数是用来删除本身fragment的方法，其实就是调用父fragment的close（SupportFragment fragment)方法。
+5 .close（），这个函数是用来删除本身 fragment 的方法，其实就是调用父 fragment 的 close（SupportFragment fragment)方法。
 
-6.show（SupportFragment fragment），如果有一些fragment你是要经常使用或者显示的，那么使用hide（），show（）方法就可以实现fragment的切换，这里不知道的可以参考我上面分享的文章。这个show（）方法就是封装了这一切换的操作。
+6.show（SupportFragment fragment），如果有一些 fragment 你是要经常使用或者显示的，那么使用 hide（），show（）方法就可以实现 fragment 的切换，这里不知道的可以参考我上面分享的文章。这个 show（）方法就是封装了这一切换的操作。
 
-写到这里我就想到如果我在这里公布源码那么还会有人去给我的github star star star吗。所以就不公布源码了。最重要的部分应该是fragment的嵌套和返回栈的管理吧。具体实现在我的github上，地址在文章最后。
-这里我给大家贴上SupportAction，和基本事务类的代码
+写到这里我就想到如果我在这里公布源码那么还会有人去给我的 github star star star 吗。所以就不公布源码了。最重要的部分应该是 fragment 的嵌套和返回栈的管理吧。具体实现在我的 github 上，地址在文章最后。
+这里我给大家贴上 SupportAction，和基本事务类的代码
+
 ```
 public interface SupportAction {
 
@@ -174,4 +174,5 @@ public class FragmentBaseTransaction {
     }
 }
 ```
-最后，贴上github地址：https://github.com/HenryHaoson/EasyFragment
+
+最后，贴上 github 地址：https://github.com/HenryHaoson/EasyFragment

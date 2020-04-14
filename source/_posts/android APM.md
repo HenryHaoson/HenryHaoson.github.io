@@ -3,7 +3,7 @@ layout: post
 title: Android APM
 date: 2020-2-5
 categories: blog
-tags: [android]
+tags: [Android]
 description: 简单了解Android APM的检测点
 cover: https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/nana1.jpg
 ---

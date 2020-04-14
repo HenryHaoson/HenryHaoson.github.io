@@ -3,12 +3,14 @@ layout: post
 title: 封装Retrofit
 date: 2017-05-07
 categories: blog
-tags: [android]
+tags: [Android]
 description: 封装Retrofit
-
 ---
-### 用静态工厂来封装retrofit
-利用反射机制和静态工厂模式，对retrofit进行简单的封装
+
+### 用静态工厂来封装 retrofit
+
+利用反射机制和静态工厂模式，对 retrofit 进行简单的封装
+
 ```
 public class ApiFactory {
     private Retrofit mRetrofit;
@@ -24,7 +26,8 @@ public class ApiFactory {
 }
 ```
 
-利用反射机制，动态获取apiService,
+利用反射机制，动态获取 apiService,
+
 ```
  public <T> T createApi(Class<T> clz){
         initRetrofit();
@@ -38,10 +41,12 @@ public class ApiFactory {
         return api;
     }
 ```
-`initRetrofit`对retrofit进行配置，对Rxjava和Gson进行适配。
- 注：baseUrl必须以 ' / ' 结尾。
-`addCallAdapterFactory`是对R下java进行适配。
-`addConverterFactory`对Gson进行适配。
+
+`initRetrofit`对 retrofit 进行配置，对 Rxjava 和 Gson 进行适配。
+注：baseUrl 必须以 ' / ' 结尾。
+`addCallAdapterFactory`是对 R 下 java 进行适配。
+`addConverterFactory`对 Gson 进行适配。
+
 ```
 private void initRetrofit(){
         mRetrofit=new Retrofit.Builder()
@@ -52,8 +57,10 @@ private void initRetrofit(){
                 .build();
     }
 ```
-`getOkClient`对okhttpClient进行初始化配置。
+
+`getOkClient`对 okhttpClient 进行初始化配置。
 详情注释
+
 ```
   private OkHttpClient getOkClient(){
         OkHttpClient okHttpClient;
@@ -66,18 +73,20 @@ private void initRetrofit(){
     }
 ```
 
+下面结合 Rxjava 进行一次使用。
+Api:Retrofit 基于注解定义的接口
 
-下面结合Rxjava进行一次使用。
-Api:Retrofit基于注解定义的接口
 ```
 public interface ZhihuNewsApi {
     @GET("api/3/news/latest")
     Observable<ZhihuNewsList> getZhihuNews();
 }
 ```
-Presenter层对数据的请求和解析。` ZhihuNewsApi api = ApiFactory.newInstance().createApi(ZhihuNewsApi.class);`利用上面的封装方便的获取Service对象。
-踩坑日记 : 
-1.Rxjava1.x和Rxjava2.x冲突解决：使用Rxjava1.x后改为Rxjava2.x要手动替换包，androidstudio的自动补全包会默认使用Rxjava1.x,会造成冲突。
+
+Presenter 层对数据的请求和解析。`ZhihuNewsApi api = ApiFactory.newInstance().createApi(ZhihuNewsApi.class);`利用上面的封装方便的获取 Service 对象。
+踩坑日记 :
+1.Rxjava1.x 和 Rxjava2.x 冲突解决：使用 Rxjava1.x 后改为 Rxjava2.x 要手动替换包，androidstudio 的自动补全包会默认使用 Rxjava1.x,会造成冲突。
+
 ```
 public void getZhihuNewsList() {
         ZhihuNewsApi api = ApiFactory.newInstance().createApi(ZhihuNewsApi.class);

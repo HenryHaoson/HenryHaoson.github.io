@@ -1,20 +1,19 @@
 ---
 layout: post
-title: FileProvider 学习 
+title: FileProvider 学习
 date: 2018-02-05
 categories: blog
-tags: [android]
+tags: [Android]
 description: 在使用Provider的是时候发现并不能通过Uri获取到data信息
 ---
 
-## FileProvider是什么
+## FileProvider 是什么
 
-FileProvider是ConetentProvider的子类,在安卓5.1中添加到库中，这个是用来作为文件共享的组件。
+FileProvider 是 ConetentProvider 的子类,在安卓 5.1 中添加到库中，这个是用来作为文件共享的组件。
 
+我们通常在在 Android 7.0 之后通过`getContentProvider.query`根据 Uri 来查询文件信息。
 
-我们通常在在Android 7.0之后通过`getContentProvider.query`根据Uri来查询文件信息。
-
-可以看到下面代码，在查询的时候并没有给出`_data`的值，所以拿不到file的绝对路径。
+可以看到下面代码，在查询的时候并没有给出`_data`的值，所以拿不到 file 的绝对路径。
 
 ```java
 
@@ -50,4 +49,3 @@ FileProvider是ConetentProvider的子类,在安卓5.1中添加到库中，这个
     }
 
 ```
-
