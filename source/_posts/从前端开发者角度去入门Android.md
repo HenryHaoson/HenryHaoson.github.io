@@ -94,6 +94,8 @@ Android 目前主流是使用 xml 去配置布局。
 
 ### 项目结构（Android）
 
+推荐使用 pbf
+
 ```
 ├─manifests
     ├─AndroidManifests.xml
@@ -115,7 +117,7 @@ Android 目前主流是使用 xml 去配置布局。
 
 ### 网络请求
 
-okhttp（已经高度封装，便于使用）
+okhttp、retrofit、rxjava（已经高度封装，便于使用）
 
 ```java
     // 1. 在API中添加新的api，并且定义模型
@@ -127,19 +129,59 @@ okhttp（已经高度封装，便于使用）
 	 */
      public interface AffixApi {
 
-	@GET("/abc/applets/affixes")
-	Observable<List<AffixData>> getAffixes(@Query("vocabulary_ids") String vocabIds);
+	    @GET("/abc/applets/affixes")
+	    Observable<List<AffixData>> getAffixes(@Query("vocabulary_ids") String vocabIds);
 
 
-	class AffixData extends ApiModel {
-		public int basewordStatus;
-		public String vocabularyId;
-		public List<WordBranchData> wordBranch;
-		public List<WordTreeData> wordTree;
-	}
+	    class AffixData extends ApiModel {
+	    	public int basewordStatus;
+	    	public String vocabularyId;
+	    	public List<WordBranchData> wordBranch;
+	    	public List<WordTreeData> wordTree;
+    	}
      }
 
-    // 2.实现
+    // 2.实现API
+
+    public class AffixApiService extends BaseApiService {
+
+	    private static AffixApiService sInstance;
+
+	    public static synchronized AffixApiService getInstance(Context context) {
+	    	if (sInstance == null) {
+	    		sInstance = new AffixApiService(SBClient.getInstanceV3(context).getClient().create(AffixApi.class));
+	    	}
+	    	return sInstance;
+    	}
+
+    	private AffixApi mApi;
+
+    	public AffixApiService(AffixApi mApi) {
+	    	this.mApi = mApi;
+    	}
+
+	    public Observable<List<AffixApi.AffixData>> getAffixes(List<String> vocabIdList) {
+    		return mApi.getAffixes(ApiUtil.concatByComma(vocabIdList));
+    	}
+    }
+
+    // 3.使用
+    AffixApiService.getInstance(getContext()).getAffix(mVocabData.id)//调用http请求方法
+				.subscribeOn(Schedulers.io())//切换请求线程到io
+				.observeOn(AndroidSchedulers.mainThread())//观察在主线程
+				.subscribe(new SBRespHandler<List<AffixApi.AffixData>>() {//请求回调
+					@Override
+					public void onSuccess(List<AffixApi.AffixData> data) {
+                        // 请求成功
+                        render(data)
+					}
+
+					@Override
+					public void onFailure(RespException e) {
+                        // 请求失败
+						onNoAffix();
+					}
+				});
 
 ```
 
