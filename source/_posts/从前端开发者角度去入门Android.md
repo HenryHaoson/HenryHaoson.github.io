@@ -109,7 +109,39 @@ Android 目前主流是使用 xml 去配置布局。
 
 ### 存储
 
+1. SharedPreference（小数据存储）
+2. File（大数据存储）
+3. sqlite（未使用）
+
 ### 网络请求
+
+okhttp（已经高度封装，便于使用）
+
+```java
+    // 1. 在API中添加新的api，并且定义模型
+	/**
+	 * 批量查询派生联想
+	 *
+	 * @param vocabIds 词汇id列表，格式 "id1,id2,id3....."
+	 * @return
+	 */
+     public interface AffixApi {
+
+	@GET("/abc/applets/affixes")
+	Observable<List<AffixData>> getAffixes(@Query("vocabulary_ids") String vocabIds);
+
+
+	class AffixData extends ApiModel {
+		public int basewordStatus;
+		public String vocabularyId;
+		public List<WordBranchData> wordBranch;
+		public List<WordTreeData> wordTree;
+	}
+     }
+
+    // 2.实现
+
+```
 
 ## Tips
 
