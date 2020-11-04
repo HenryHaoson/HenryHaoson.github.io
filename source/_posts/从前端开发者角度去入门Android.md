@@ -10,12 +10,13 @@ Android 目前主流是使用 xml 去配置布局。
 2. RelativeLayout(相对布局)
 3. FrameLayout（帧布局）
 4. ConstraintLayout（约束布局-功能更强大）
+5. FlexBoxLayout(不是 Android 自带的，是 google 出的一个第三方布局，前端友好)))
 
 举例：
 
 ```xml
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,16 +34,18 @@ Android 目前主流是使用 xml 去配置布局。
 2. TextView（展示文字）
 3. Button（按钮）
 4. EditText（输入框）
+5. ViewPager（类似 swiper）
+6. Recyclerview（列表视图,内部实现了复用）
 
 ```xml
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-<TextView
+        <TextView
             android:id="@+id/tv_past_exam"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -58,6 +61,8 @@ Android 目前主流是使用 xml 去配置布局。
 ```
 
 ## css -> xml/java code
+
+理解转变：样式->视图属性
 
 样式可以直接在 xml 里边声明，也可以在代码里边设置
 
