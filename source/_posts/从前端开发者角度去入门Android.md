@@ -6,7 +6,7 @@ Android 目前主流是使用 xml 去配置布局。
 
 ### 主流布局方式
 
-1. LinearLayout(线性布局)：
+1. LinearLayout(线性布局)
 2. RelativeLayout(相对布局)
 3. FrameLayout（帧布局）
 4. ConstraintLayout（约束布局-功能更强大）
@@ -36,6 +36,7 @@ Android 目前主流是使用 xml 去配置布局。
 4. EditText（输入框）
 5. ViewPager（类似 swiper）
 6. Recyclerview（列表视图,内部实现了复用）
+7. Dialog（弹框）
 
 ```xml
 
@@ -99,7 +100,7 @@ Android 目前主流是使用 xml 去配置布局。
 
 ### 项目结构（Android）
 
-推荐使用 pbf
+推荐使用 pbf(pbl or pbf )
 
 ```
 ├─manifests
@@ -113,6 +114,36 @@ Android 目前主流是使用 xml 去配置布局。
     ├─values
         ├─colors(颜色)
 ```
+
+### 四大组件
+
+1.  activity（用的最多）
+    > 可以理解成 app 里的一个页面
+2.  service
+    > 后台服务（没有界面）
+3.  broadcast receiver
+    > 是一种系统通信机制
+4.  content provider
+    > 一种系统数据访问的方法
+
+### LayoutInflater
+
+它将 xml 转换成视图对象
+
+根据 id 找到视图
+
+```java
+TextView tvShanbay = parentView.findViewById(R.id.tv_shanbay)
+
+```
+
+### 线程模型
+
+多线程
+
+线程切换目前使用的是 Rxjava。
+
+> 注：UI 操作只能够在主线程，网络请求一定不能在主线程，耗时操作一般都不会在主线程。
 
 ### 存储
 
@@ -177,21 +208,31 @@ okhttp、retrofit、rxjava（已经高度封装，便于使用）
 				.subscribe(new SBRespHandler<List<AffixApi.AffixData>>() {//请求回调
 					@Override
 					public void onSuccess(List<AffixApi.AffixData> data) {
-                        // 请求成功
-                        render(data)
+                                                // 请求成功
+                                                render(data)
 					}
 
 					@Override
 					public void onFailure(RespException e) {
-                        // 请求失败
-						onNoAffix();
+                                                // 请求失败
+                                                onNoAffix();
 					}
 				});
 
 ```
 
+### 其他知识点
+
+1. 权限处理
+2. 依赖
+3. 打包
+4. 单元测试
+5. 性能检测
+
 ## Tips
 
-1.目前没有使用状态管理的框架
+1. 目前没有使用状态管理的框架
 
-2.要有 OO 的思想
+2. 要有 OO 的思想
+
+3. Android 是开源的，你可以看到具体的实现逻辑
