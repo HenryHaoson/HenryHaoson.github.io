@@ -59,6 +59,7 @@ Android 目前主流是使用 xml 去配置布局。
             android:text="柯林斯词典"/>
 </LinearLayout>
 
+
 ```
 
 ## css -> xml/java code
@@ -113,6 +114,11 @@ Android 目前主流是使用 xml 去配置布局。
     ├─layout(布局文件)
     ├─values
         ├─colors(颜色)
+
+
+代码设计可以使用mvp、mvc（没有强制要求）如果有更合理的抽象，推荐使用。
+
+
 ```
 
 ### 四大组件
@@ -224,10 +230,11 @@ okhttp、retrofit、rxjava（已经高度封装，便于使用）
 ### 其他知识点
 
 1. 权限处理
-2. 依赖
+2. 依赖管理
 3. 打包
 4. 单元测试
 5. 性能检测
+6. 动画
 
 ## Tips
 
@@ -235,4 +242,4 @@ okhttp、retrofit、rxjava（已经高度封装，便于使用）
 
 2. 要有 OO 的思想
 
-3. Android 是开源的，你可以看到具体的实现逻辑
+3. Android 是开源的，你可以看到具体的实现逻辑（看源码）
