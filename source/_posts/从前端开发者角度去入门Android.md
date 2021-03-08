@@ -6,11 +6,11 @@ Android 目前主流是使用 xml 去配置布局。
 
 ### 主流布局方式
 
-1. LinearLayout(线性布局)
-2. RelativeLayout(相对布局)
-3. FrameLayout（帧布局）
-4. ConstraintLayout（约束布局-功能更强大）
-5. FlexBoxLayout(不是 Android 自带的，是 google 出的一个第三方布局，前端友好)))
+1. [LinearLayout(线性布局)]("https://developer.android.com/reference/android/widget/LinearLayout")
+2. [RelativeLayout(相对布局)]("https://developer.android.com/reference/android/widget/RelativeLayout")
+3. [FrameLayout（帧布局）]("https://developer.android.com/reference/android/widget/FrameLayout")
+4. [ConstraintLayout（约束布局-功能更强大）]("https://developer.android.com/training/constraint-layout")
+5. [FlexBoxLayout(不是 Android 自带的，是 google 出的一个第三方布局，前端友好)]("https://github.com/google/flexbox-layout")
 
 举例：
 
@@ -30,13 +30,13 @@ Android 目前主流是使用 xml 去配置布局。
 
 ### 常用控件
 
-1. ImageView（展示图片）
-2. TextView（展示文字）
-3. Button（按钮）
-4. EditText（输入框）
-5. ViewPager（类似 swiper）
-6. Recyclerview（列表视图,内部实现了复用）
-7. Dialog（弹框）
+1. [ImageView（展示图片）]("https://developer.android.com/reference/android/widget/ImageView")
+2. [TextView（展示文字）]("https://developer.android.com/reference/android/widget/TextView")
+3. [Button（按钮）]("https://developer.android.com/reference/android/widget/Button")
+4. [EditText（输入框）]("https://developer.android.com/reference/android/widget/EditText")
+5. [ViewPager（类似 swiper）]("https://developer.android.com/guide/navigation/navigation-swipe-view")
+6. [Recyclerview（列表视图,内部实现了复用）]("https://developer.android.com/guide/topics/ui/layout/recyclerview")
+7. [Dialog（弹框）]("https://developer.android.com/guide/topics/ui/dialogs")
 
 ```xml
 
@@ -98,6 +98,10 @@ Android 目前主流是使用 xml 去配置布局。
 主要是逻辑代码（kt java 皆可）
 
 ## Android 领域知识点
+
+### 开发工具
+
+[AndroidStudio]("https://developer.android.com/studio")
 
 ### 项目结构（Android）
 
