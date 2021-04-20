@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>java内存模型 | HenryHaoson</title><meta name="description" content="学习java内存模型对学习线程虚拟机执行过程有很大的帮助"><meta name="keywords" content="JVM"><meta name="author" content="HenryHaoson"><meta name="copyright" content="HenryHaoson"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/img/favicon.ico"><link rel="preconnect" href="//cdn.jsdelivr.net"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="java内存模型"><meta name="twitter:description" content="学习java内存模型对学习线程虚拟机执行过程有很大的帮助"><meta name="twitter:image" content="https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg"><meta property="og:type" content="article"><meta property="og:title" content="java内存模型"><meta property="og:url" content="https://henryhaoson.github.io/2017/12/05/javaMemoryModel/"><meta property="og:site_name" content="HenryHaoson"><meta property="og:description" content="学习java内存模型对学习线程虚拟机执行过程有很大的帮助"><meta property="og:image" content="https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><script src="https://cdn.jsdelivr.net/npm/js-cookie/dist/js.cookie.min.js"></script><script>const autoChangeMode = 'false'
+var t = Cookies.get("theme");
+if (autoChangeMode == '1'){
+const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+const isLightMode = window.matchMedia("(prefers-color-scheme: light)").matches
+const isNotSpecified = window.matchMedia("(prefers-color-scheme: no-preference)").matches
+const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+if (t === undefined){
+  if (isLightMode) activateLightMode()
+  else if (isDarkMode) activateDarkMode()
+  else if (isNotSpecified || hasNoSupport){
+    console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+    now = new Date();
+    hour = now.getHours();
+    isNight = hour < 6 || hour >= 18
+    isNight ? activateDarkMode() : activateLightMode()
+}
+} else if (t == 'light') activateLightMode()
+else activateDarkMode()
+
+
+} else if (autoChangeMode == '2'){
+  now = new Date();
+  hour = now.getHours();
+  isNight = hour < 6 || hour >= 18
+  if(t === undefined) isNight? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode() 
+} else {
+  if ( t == 'dark' ) activateDarkMode()
+  else if ( t == 'light') activateLightMode()
+}
+
+function activateDarkMode(){
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+    document.querySelector('meta[name="theme-color"]').setAttribute('content','#000')
+  }
+}
+function activateLightMode(){
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null){
+  document.querySelector('meta[name="theme-color"]').setAttribute('content','#fff')
+  }
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@latest/css/font-awesome.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="canonical" href="https://henryhaoson.github.io/2017/12/05/javaMemoryModel/"><link rel="prev" title="FileProvider 学习" href="https://henryhaoson.github.io/2018/02/05/FileProvider/"><link rel="next" title="singleton" href="https://henryhaoson.github.io/2017/12/05/singleton/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"cookieDomain":"https://xxx/","msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  highlight_copy: 'false',
+  highlight_lang: 'true',
+  highlight_shrink: 'false',
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    title: 'Snackbar.bookmark.title',
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  copyright: undefined,
+  copy_copyright_js: false,
+  ClickShowText: undefined,
+  medium_zoom: 'false',
+  Snackbar: undefined
+  
+}</script><meta name="generator" content="Hexo 4.2.0"></head><body><div id="header"><div id="page-header"><span class="pull_left" id="blog_name"><a class="blog_title" id="site-name" href="/home/">HenryHaoson</a></span><i class="fa fa-bars fa-fw toggle-menu pull_right close" aria-hidden="true"></i><span class="pull_right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/home/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> List</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div></span><span class="pull_right" id="search_button"></span></div></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="lazyload avatar_img" src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'"></div><div class="mobile_post_data"><div class="mobile_data_item is_center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">42</div></a></div></div><div class="mobile_data_item is_center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">22</div></a></div></div><div class="mobile_data_item is_center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">3</div></a></div></div></div><hr><div class="menus_items"><div class="menus_item"><a class="site-page" href="/home/"><i class="fa-fw fa fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> Link</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fa fa-heart"></i><span> About</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fa fa-list" aria-hidden="true"></i><span> List</span><i class="fa fa-chevron-down menus-expand" aria-hidden="true"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fa fa-music"></i><span> Music</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fa fa-film"></i><span> Movie</span></a></li></ul></div></div></div><div id="mobile-sidebar-toc"><div class="toc_mobile_headline">目录</div><ol class="toc_mobile_items"><li class="toc_mobile_items-item toc_mobile_items-level-2"><a class="toc_mobile_items-link" href="#主内存和工作内存"><span class="toc_mobile_items-number">1.</span> <span class="toc_mobile_items-text">主内存和工作内存</span></a><ol class="toc_mobile_items-child"><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#主内存和工作内存的交互操作"><span class="toc_mobile_items-number">1.1.</span> <span class="toc_mobile_items-text">主内存和工作内存的交互操作</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#8-种交互操作执行的规则"><span class="toc_mobile_items-number">1.2.</span> <span class="toc_mobile_items-text">8 种交互操作执行的规则</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#特殊的规则-volatile"><span class="toc_mobile_items-number">1.3.</span> <span class="toc_mobile_items-text">特殊的规则 volatile</span></a></li><li class="toc_mobile_items-item toc_mobile_items-level-3"><a class="toc_mobile_items-link" href="#long-double-的特殊规则"><span class="toc_mobile_items-number">1.4.</span> <span class="toc_mobile_items-text">long,double 的特殊规则</span></a></li></ol></li></ol></div></div><div id="body-wrap"><i class="fa fa-arrow-right" id="toggle-sidebar" aria-hidden="true">     </i><div class="auto_open" id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#主内存和工作内存"><span class="toc-number">1.</span> <span class="toc-text">主内存和工作内存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#主内存和工作内存的交互操作"><span class="toc-number">1.1.</span> <span class="toc-text">主内存和工作内存的交互操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-种交互操作执行的规则"><span class="toc-number">1.2.</span> <span class="toc-text">8 种交互操作执行的规则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#特殊的规则-volatile"><span class="toc-number">1.3.</span> <span class="toc-text">特殊的规则 volatile</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#long-double-的特殊规则"><span class="toc-number">1.4.</span> <span class="toc-text">long,double 的特殊规则</span></a></li></ol></li></ol></div></div></div><div id="content-outer"><div id="top-container" style="background-image: url(https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg)"><div id="post-info"><div id="post-title"><div class="posttitle">java内存模型</div></div><div id="post-meta"><time class="post-meta__date"><i class="fa fa-calendar" aria-hidden="true"></i> 发表于 2017-12-05<span class="post-meta__separator">|</span><i class="fa fa-history" aria-hidden="true"></i> 更新于 2020-04-14</time><span class="post-meta__separator mobile_hidden">|</span><span class="mobile_hidden"><i class="fa fa-inbox post-meta__icon" aria-hidden="true"></i><a class="post-meta__categories" href="/categories/blog/">blog</a></span><div class="post-meta-wordcount"><i class="fa fa-eye post-meta__icon" aria-hidden="true">       </i><span>阅读量: </span><span id="busuanzi_value_page_pv"></span></div></div></div></div><div class="layout layout_post" id="content-inner">   <article id="post"><div class="article-container" id="post-content"><html><head></head><body><p>java 内存模型的主要目的是定义程序中各个变量的访问规则。就是虚拟机中将变量存储到内存中，以及从内存中取出的底层细节。</p>
+<p>这里的变量和 java 中所定义的变量不同，这里所说的变量包括实例字段，静态字段和构成数组对象的元素，不包括局部变量和方法参数化（应为这两个是线程私有的）。</p>
+<h2 id="主内存和工作内存"><a href="#主内存和工作内存" class="headerlink" title="主内存和工作内存"></a>主内存和工作内存</h2><p>上面所说的变量都位于主内存当中。每个线程都有自己的工作内存。工作内存中保存了这个线程对所用到的变量在主内存的拷贝对象，线程对变量的操作都是在工作内存当中进行的，也就是说都是对拷贝副本的操作，不能直接操作主内存中的变量。不同的线程也不能操作其他线程中的变量，交互必须通过主内存。</p>
+<p>要清楚这里的主内存和工作内存的内层划分和堆栈方法区没有关系，这两者是不同层次的内存划分。</p>
+<p><img alt="主内存-工作内存" data-src="http://upload-images.jianshu.io/upload_images/3351492-b7eb6ba64823954b.png" class="lazyload"></p>
+<h3 id="主内存和工作内存的交互操作"><a href="#主内存和工作内存的交互操作" class="headerlink" title="主内存和工作内存的交互操作"></a>主内存和工作内存的交互操作</h3><p>java 虚拟机规定了 8 中操作</p>
+<ul>
+<li><p>lock:作用于主内存的变量，表明该变量现在被一条线程独自占有。</p>
+</li>
+<li><p>unlock:作用于主内存的变量，表明被线程独自占有的变量被释放。</p>
+</li>
+<li><p>read:作用于主内存的变量，把变量的值传输到工作内存中，以便下一步 load 操作。</p>
+</li>
+<li><p>load:作用于工作内存当中，把 read 操作得到值存入工作内存的副本当中。</p>
+</li>
+<li><p>use:作用于工作内存的变量，将 load 得到的值传给执行引擎。每当虚拟机遇到一个·需要使用到变量的值的字节码指令·的时候都会进行这个操作。(句读之不知）</p>
+</li>
+<li><p>assign:作用于工作内存的变量，将从执行引擎获得的值赋值给工作内存中的变量。</p>
+</li>
+<li><p>store:将工作内存当中的值传送到主内存。以便 write 操作。</p>
+</li>
+<li><p>write:将 store 得到的值放到主内存的变量中。</p>
+</li>
+</ul>
+<h3 id="8-种交互操作执行的规则"><a href="#8-种交互操作执行的规则" class="headerlink" title="8 种交互操作执行的规则"></a>8 种交互操作执行的规则</h3><ul>
+<li><p>不允许 read 和 load、store 和 write 操作之一单独出现。意思是不允许从主内存读取变量的值然后工作内存不接受，反之也是。</p>
+</li>
+<li><p>在工作内存中进行 assign 操作必须要同步回主内存。</p>
+</li>
+<li><p>工作内存不能够在没有进行任何 assign 操作的时候进行同步主内存的操作</p>
+</li>
+<li><p>工作内存当中不能够使用没有被赋值的变量。新的变量只能在主内存当中生成，惠安句话就是说 use 之前必须 load。store 之前必须 assign（细细品味这个，和上一点也有关系）</p>
+</li>
+<li><p>一个变量只能够被一个线程进行 lock 操作，并且可以进行多次 lock 操作，但是必须进行相同次数的 unlock 操作才能解锁变量。</p>
+</li>
+<li><p>如果对一个变量执行 lock 操作，会清空工作内存中这个变量的值，在执行引擎使用这个变量的之前必须执行 load 或者 assign 操作。</p>
+</li>
+<li><p>如果一个对象没有被 lock 就不能执行 unlock 操作。</p>
+</li>
+<li><p>在执行 unlock 之前，要把工作内存中的变量传到主内存当中。</p>
+</li>
+</ul>
+<h3 id="特殊的规则-volatile"><a href="#特殊的规则-volatile" class="headerlink" title="特殊的规则 volatile"></a>特殊的规则 volatile</h3><p>这其实是我看 java 内存模型的可以说是导火索把:)</p>
+<p>volatile 是虚拟机提供的最轻量的同步机制。</p>
+<p>被 volatile 声明的变量对所有线程具有可见性，这就意味着当你在一个线程的工作内存中修改了这个变量，那么其他线程会立刻知晓，所以这个变量在各个线程中是一致的。</p>
+<p>这里有一个误区，那就是被 volatile 声明的变量并不是并发安全的。原因是因为 java 的运算操作并不是原子操作。</p>
+<p>不如说 a++;这个运算，他的字节码指令是这样的：</p>
+<p>getstatic<br>iconst_1<br>iadd<br>putstatic</p>
+<p>已经是 4 条指令来完成运算，所以说这个运算不是原子操作。</p>
+<p>其实这里也不是很严谨，因为即使是一条字节码指令，也有可能解释器需要多行代码才能解释指令，jit 需要多条本地指令完成这个字节码指令。</p>
+<p>所以说仍然需要加锁来保证原子性操作。在下面两种情况下，不需要加锁</p>
+<ul>
+<li><p>运算结果不依赖于当前变量的值，或者说能够确保只有单一线程可以修改变量的值。</p>
+</li>
+<li><p>变量不需要和其他的变量一同参与不变约束。</p>
+</li>
+</ul>
+<p>除了可见性，volatile 还有余个语义就是禁止指令重排序优化，这里的规则是在复制操作后多了一个 lock 指令，在 cpu 执行指令的时候，在 lock 指令后的指令无法咋 lock 指令之前执行，也就是所谓的内存屏障。</p>
+<p>这里在提及一下 cpu 乱序执行(指令重排序）的概念。</p>
+<p>指令重排序是指 cpu 采用了允许将多条指令不按程序规定的顺序分开发送给相应的电路单元处理。这里的乱序不是随意的，cpu 要能正确处理指令依赖的情况来保证程序得到正确的结果。<br>volatile 是轻量级的同步机制，说他轻量级，那她在性能方面肯定有一定的优势，尤其是在变量读取这方面，是跟普通变量的读取性能消耗差不多的，但是在写方面，可能会慢一些。</p>
+<h3 id="long-double-的特殊规则"><a href="#long-double-的特殊规则" class="headerlink" title="long,double 的特殊规则"></a>long,double 的特殊规则</h3><p>之前说的内存交互的 8 种操作都是原子性的，但是，如果操作对象是 long 或者是 double，并且没有用 volatile 修饰，那么虚拟机允许这 8 种操作分成两次 32 位的操作。但是虚拟机虽然允许，但是不建议这样做，还是希望实现虚拟机时将这些操作也实现成原子性操作。</p>
+</body></html></div></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">HenryHaoson</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://henryhaoson.github.io/2017/12/05/javaMemoryModel/">https://henryhaoson.github.io/2017/12/05/javaMemoryModel/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://henryhaoson.github.io">HenryHaoson</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/JVM/">JVM    </a></div><div class="post_share"><div class="social-share" data-image="https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js@1.0.16/dist/js/social-share.min.js"></script></div></div><div class="post-reward"><a class="reward-button"><i class="fa fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/wechat.jpg"><div class="post-qr-code__desc">微信</div></li><li class="reward-item"><img class="lazyload post-qr-code__img" src="/img/alipay.jpg"><div class="post-qr-code__desc">支付寶</div></li></ul></div></a></div><nav class="pagination_post" id="pagination"><div class="prev-post pull_left"><a href="/2018/02/05/FileProvider/"><img class="prev_cover lazyload" data-src="https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg" onerror="onerror=null;src='/img/404.jpg'"><div class="label">上一篇</div><div class="prev_info"><span>FileProvider 学习</span></div></a></div><div class="next-post pull_right"><a href="/2017/12/05/singleton/"><img class="next_cover lazyload" data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png" onerror="onerror=null;src='/img/404.jpg'"><div class="label">下一篇</div><div class="next_info"><span>singleton</span></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fa fa-fw fa-thumbs-up" aria-hidden="true"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/2017/05/10/2017-5-10-JVM运行时数据区域/" title="JVM运行时数据区域"><img class="relatedPosts_cover lazyload"data-src="https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg"><div class="relatedPosts_title">JVM运行时数据区域</div></a></div><div class="relatedPosts_item"><a href="/2017/10/27/jvm性能调试命令/" title="几条常用的性能调试的命令"><img class="relatedPosts_cover lazyload"data-src="https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg"><div class="relatedPosts_title">几条常用的性能调试的命令</div></a></div><div class="relatedPosts_item"><a href="/2017/08/05/类初始化时机/" title="类初始化的时机"><img class="relatedPosts_cover lazyload"data-src="https://raw.githubusercontent.com/HenryHaoson/HenryHaoson.github.io/source/source/images/default_bg.jpeg"><div class="relatedPosts_title">类初始化的时机</div></a></div><div class="relatedPosts_item"><a href="/2017/07/28/类文件结构/" title="类文件结构"><img class="relatedPosts_cover lazyload"data-src="https://cdn.jsdelivr.net/gh/jerryc127/CDN@latest/cover/default_bg.png"><div class="relatedPosts_title">类文件结构</div></a></div></div><div class="clear_both"></div></div></div></div><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2018 - 2021 By HenryHaoson</div><div class="framework-info"><span>驱动 </span><a href="http://hexo.io" target="_blank" rel="noopener"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a href="https://github.com/jerryc127/hexo-theme-butterfly" target="_blank" rel="noopener"><span>Butterfly</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><i class="fa fa-book" id="readmode" title="阅读模式"></i><i class="fa fa-plus" id="font_plus" title="放大字体"></i><i class="fa fa-minus" id="font_minus" title="缩小字体"></i><a class="translate_chn_to_cht" id="translateLink" href="javascript:translatePage();" title="简繁转换" target="_self">繁</a><i class="darkmode fa fa-moon-o" id="darkmode" title="夜间模式"></i></div><div id="rightside-config-show"><div id="rightside_config" title="设置"><i class="fa fa-cog" aria-hidden="true"></i></div><i class="fa fa-list-ul close" id="mobile-toc-button" title="目录" aria-hidden="true"></i><i class="fa fa-arrow-up" id="go-up" title="回到顶部" aria-hidden="true"></i></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="/js/tw_cn.js"></script><script>translateInitilization()
+</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@latest/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/lazysizes@latest/lazysizes.min.js" async=""></script></body></html>
