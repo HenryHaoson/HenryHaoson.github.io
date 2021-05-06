@@ -124,30 +124,51 @@ li {
 kotlin 官方
 > 高阶函数是将函数用作参数或返回值的函数。
 
+高阶函数在外部调用的时候很简单。
+
+高阶函数示例：
 ``` kotlin
 
-    private var mListener: ListenerBuilder? = null
+// 声明
+fun html(html:(Html.()->Unit)):Html{
+    return Html().alse(html)
+}
 
-    // 高阶函数示例
-    fun setListener(listenerBuilder: ListenerBuilder.() -> Unit) {
-        mListener = ListenerBuilder().also(listenerBuilder)
+class Html{
+    var mHead : Head? = null
+    fun head(head:(Head.()->Unit)){
+        mHead = Head().also(head)
     }
 
-    inner class ListenerBuilder {
-        internal var mOnFilterClickedAction: ((View) -> Unit)? = null
+    // body 类似
+}
 
-        internal var mOnCalendarClickedAction: (() -> Unit)? = null
+// 使用
 
-        fun onFilterClicked(action: (View) -> Unit) {
-            mOnFilterClickedAction = action
-        }
+html {
+    head{
 
-        fun onCalendarClicked(action: () -> Unit) {
-            mOnCalendarClickedAction = action
-        }
     }
+    body{
+
+    }
+}
 
 ```
+
+kotlin 外部可以这样调用主要依赖了两个语法
+- lambda 表达式
+  在 Kotlin 中有一个约定：如果函数的最后一个参数是函数，那么作为相应参数传入的 lambda 表达式可以放在圆括号之外
+
+所以写法原来是这样的
+``` kotlin
+
+html(head = {
+
+})
+
+```
+
 
 ## 总结
 
