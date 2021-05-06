@@ -115,6 +115,40 @@ li {
 ```
 ## 原理
 
+其实现原理就是使用的 kotlin 的高阶函数特性
+
+### 高阶函数概念
+维基百科：
+> 在函数式编程中，折叠（fold），也称为归约（reduce）、积累（accumulate）、聚集（aggregate）、压缩（compress）或注入（inject），指称一组高阶函数，它们分析递归数据结构并通过使用给定组合运算，将递归的处理它的构成部件、建造一个返回值的结果重组起来。典型的，要向折叠提供一个组合函数，一个数据结构的顶端节点，和可能的在特定条件下使用的某些缺省值。折叠接着以系统性方式使用这个函数，进行组合这个数据结构的层级中的元素。折叠在某种意义上是展开（unfold）的对偶，它接受一个种子值并共递归的应用一个函数，来确定如何进一步的构造一个共递归的数据结构。折叠递归的分解这个数据结构，在每个节点应用一个组合函数于它的终结值和递归结果之上，用得到这个结果替代它。折叠是catamorphism，而展开是anamorphism。
+
+kotlin 官方
+> 高阶函数是将函数用作参数或返回值的函数。
+
+``` kotlin
+
+    private var mListener: ListenerBuilder? = null
+
+    // 高阶函数示例
+    fun setListener(listenerBuilder: ListenerBuilder.() -> Unit) {
+        mListener = ListenerBuilder().also(listenerBuilder)
+    }
+
+    inner class ListenerBuilder {
+        internal var mOnFilterClickedAction: ((View) -> Unit)? = null
+
+        internal var mOnCalendarClickedAction: (() -> Unit)? = null
+
+        fun onFilterClicked(action: (View) -> Unit) {
+            mOnFilterClickedAction = action
+        }
+
+        fun onCalendarClicked(action: () -> Unit) {
+            mOnCalendarClickedAction = action
+        }
+    }
+
+```
+
 ## 总结
 
 参考
