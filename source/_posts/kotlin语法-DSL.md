@@ -8,6 +8,7 @@ description: kotlin DSL
 ---
 
 ## DSL 概念
+
 维基百科定义
 > 领域特定语言（英语：domain-specific language、DSL）指的是专注于某个应用程序领域的计算机语言。又译作领域专用语言。
 
@@ -245,6 +246,7 @@ html(head = {
 ```
 
 ### 中缀调用
+
 Kotlin 中有种特殊的函数可以使用中缀调用。
 
 标有 infix 关键字的函数也可以使用中缀表示法（忽略该调用的点与圆括号）调用。中缀函数必须满足以下要求：
@@ -295,6 +297,7 @@ class Dependencies{
 >>>val dependencies = Dependencies()
 >>>// 以两种方式分别调用 compile()
 ```
+
 ## 总结
 其中比较好玩的我觉得是中缀函数，这样代码就像普通文本一样。
 还有一个 高阶函数也还行（lambda），嵌套风格看上去也很简洁（UI）
