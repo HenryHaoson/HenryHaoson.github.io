@@ -34,6 +34,12 @@ Jetpack Compose 示例：
     }
 ```
 
+kotlin 日期处理
+
+```
+val yesterday = 1.days().ago()
+```
+
 ### 外部 DSL
 
 外部 DSL 一般指的是独立的编程语言。 比如说前端的 HTML、 CSS 还有 Android 的 xml 布局文件。
@@ -112,7 +118,23 @@ li {
     }
 }
 
+
 ```
+
+
+#### 操作符重载
+
+kotlin 对很多操作符进行了重载
+
+比如说 ==
+``` kotlin
+// 使用
+a == b
+
+实现
+a?.equals(b) ?: (b === null)
+```
+
 ## 原理
 
 其实现原理就是使用的 kotlin 的四个语法知识
@@ -122,7 +144,54 @@ li {
 - invoke 约定
 ### 扩展函数
 
+>Kotlin 能够扩展一个类的新功能而无需继承该类或者使用像装饰者这样的设计模式。 这通过叫做 扩展 的特殊声明完成。 例如，你可以为一个你不能修改的、来自第三方库中的类编写一个新的函数。 这个新增的函数就像那个原始类本来就有的函数一样，可以用普通的方法调用。 这种机制称为 扩展函数 。
+
+``` kotlin
+class Entity(){
+    //
+}
+
+// 扩展函数
+fun Entity.ability(){
+
+}
+
+// 调用
+Entity.ability();
+
+```
+
+扩展函数可以给类增加能力，这个对于贫血模型来说是非常重要的一个能力。当一个模型的定义不在你的控制范围之内，你依然可以通过扩展函数去编写他的职责（补充领域层）。
+
+利用扩展函数可以实现一套和日期有关的 DSL，就像上边一样。
+
+```kotlin
+fun Int.days() = Period.ofDays(this)
+fun Period.ago() = LocalDate.now() - this
+
+// 调用
+val result = 3.days().ago()
+
+```
+
+如果使用扩展属性，可以省略括号，看上去和酷一点
+
+```kotlin
+val Int.days:Period
+    get() = Period.ofDays(this)
+
+val Period.ago:LocalDate
+    get() = LocalDate.now() - this
+
+val result = 3.days.ago
+```
+
 ### lambda
+lambda 可以使我们的代码看上去更加简洁。
+
+目前java 在 Android 中使用 lambda 没有那么方便。kotlin 可以满足我们使用 lambda 的需求。
+
+在kotlin 中，lambda 配合高阶函数就可以实现上边的类似 html 的 DSL（这个是实现嵌套的本职）
 
 #### 高阶函数概念
 维基百科：
@@ -152,7 +221,7 @@ class Html{
 
 // 使用
 
-html {
+val result = html {
     head{
 
     }
@@ -163,9 +232,8 @@ html {
 
 ```
 
-kotlin 外部可以这样调用主要依赖了两个语法
-- lambda 表达式
-  在 Kotlin 中有一个约定：如果函数的最后一个参数是函数，那么作为相应参数传入的 lambda 表达式可以放在圆括号之外
+kotlin 外部可以这样调用主要依赖了一个规则
+在 Kotlin 中有一个约定：如果函数的最后一个参数是函数，那么作为相应参数传入的 lambda 表达式可以放在圆括号之外
 
 所以写法原来是这样的
 ``` kotlin
@@ -177,7 +245,23 @@ html(head = {
 ```
 
 ### 中缀调用
+Kotlin 中有种特殊的函数可以使用中缀调用。
 
+标有 infix 关键字的函数也可以使用中缀表示法（忽略该调用的点与圆括号）调用。中缀函数必须满足以下要求：
+
+- 它们必须是成员函数或扩展函数；
+- 它们必须只有一个参数；
+- 其参数不得接受可变数量的参数且不能有默认值。
+
+中缀调用可以帮助我们实现类似自然语言的调用方式
+
+比如说之前的日期表示法
+
+ ``` kotlin
+ val yesterday = 1 days ago
+ ```
+
+这样看上去就更舒适了。
 
 ### invoke 约定
 
