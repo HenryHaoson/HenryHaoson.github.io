@@ -259,15 +259,47 @@ Kotlin 中有种特殊的函数可以使用中缀调用。
 
  ``` kotlin
  val yesterday = 1 days ago
+
+ // 实现
+ infix fun Int.days():Period = {/**/}
+ infix fun Period.ago():LocalDate = {/**/}
  ```
 
 这样看上去就更舒适了。
 
 ### invoke 约定
 
+Kotlin 提供了 invoke 约定，可以让对象向函数一样直接调用，比如 gradle dsl：
 
+```kotlin
+dependencies {
+    compile("com.android.support:appcompat-v7:27.0.1")
+    compile("com.android.support.constraint:constraint-layout:1.0.2")
+}
+
+// 等价于：
+dependencies.compile("com.android.support:appcompat-v7:27.0.1")
+dependencies.compile("com.android.support.constraint:constraint-layout:1.0.2")
+
+class Dependencies{
+
+    fun compile(coordinate:String){
+        println("add $coordinate")
+    }
+
+    operator fun invoke(block:Dependencies.()->Unit){
+        block()
+    }
+}
+
+>>>val dependencies = Dependencies()
+>>>// 以两种方式分别调用 compile()
+```
 ## 总结
-内部 DSL 在前端这边已经发展了很长一段时间，
+其中比较好玩的我觉得是中缀函数，这样代码就像普通文本一样。
+还有一个 高阶函数也还行（lambda），嵌套风格看上去也很简洁（UI）
+
+kotlin 的 DSL 是语法糖的融合。 可以玩一玩，体验一下创造一个语言的乐趣。但是如果想要建立一个DSL 还是需要花很多成本的（领域的认知成本）。（目前还不建议在生产随意创建 DSL）
 
 参考
 
