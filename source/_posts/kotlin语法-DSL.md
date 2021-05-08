@@ -3,7 +3,7 @@ layout: post
 title: kotlin语法-DSL
 date: 2021-04-21
 categories: blog
-tags: [kotlin, 编程语言]
+tags: [kotlin, dsl]
 description: kotlin DSL
 ---
 
