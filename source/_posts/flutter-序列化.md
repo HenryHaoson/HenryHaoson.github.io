@@ -3,7 +3,7 @@ layout: post
 title: flutter-序列化
 date: 2021-05-11
 categories: blog
-tags: [flutter]
+tags: [flutter, 序列化]
 description: flutter 序列化
 ---
 
@@ -245,11 +245,28 @@ json 数据:
 我们要建立一个 MaterialBook 的模型，这个模型要实现 `Built` 类。
 
 ```dart
-
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:built_collection/built_collection.dart';
 
 part 'materialBook.g.dart';
+
+
+abstract class MaterialBooks
+    implements Built<MaterialBooks, MaterialBooksBuilder> {
+  BuiltList<MaterialBook> get objects;
+
+  // 匿名构造函数
+  MaterialBooks._();
+
+  // 提供序列化器
+  static Serializer<MaterialBooks> get serializer => _$materialBooksSerializer;
+
+  // 需要提供工厂方法
+  factory MaterialBooks([void Function(MaterialBooksBuilder) updates]) =
+  _$MaterialBooks;
+}
+
 
 abstract class MaterialBook
     implements Built<MaterialBook, MaterialBookBuilder> {
@@ -287,8 +304,54 @@ part of 'materialBook.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<MaterialBooks> _$materialBooksSerializer =
+    new _$MaterialBooksSerializer();
 Serializer<MaterialBook> _$materialBookSerializer =
     new _$MaterialBookSerializer();
+
+class _$MaterialBooksSerializer implements StructuredSerializer<MaterialBooks> {
+  @override
+  final Iterable<Type> types = const [MaterialBooks, _$MaterialBooks];
+  @override
+  final String wireName = 'MaterialBooks';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, MaterialBooks object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'objects',
+      serializers.serialize(object.objects,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(MaterialBook)])),
+    ];
+
+    return result;
+  }
+
+  @override
+  MaterialBooks deserialize(
+      Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new MaterialBooksBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final Object value = iterator.current;
+      switch (key) {
+        case 'objects':
+          result.objects.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(MaterialBook)]))
+              as BuiltList<Object>);
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
 
 class _$MaterialBookSerializer implements StructuredSerializer<MaterialBook> {
   @override
@@ -345,6 +408,95 @@ class _$MaterialBookSerializer implements StructuredSerializer<MaterialBook> {
     }
 
     return result.build();
+  }
+}
+
+class _$MaterialBooks extends MaterialBooks {
+  @override
+  final BuiltList<MaterialBook> objects;
+
+  factory _$MaterialBooks([void Function(MaterialBooksBuilder) updates]) =>
+      (new MaterialBooksBuilder()..update(updates)).build();
+
+  _$MaterialBooks._({this.objects}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(objects, 'MaterialBooks', 'objects');
+  }
+
+  @override
+  MaterialBooks rebuild(void Function(MaterialBooksBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  MaterialBooksBuilder toBuilder() => new MaterialBooksBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is MaterialBooks && objects == other.objects;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, objects.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('MaterialBooks')
+          ..add('objects', objects))
+        .toString();
+  }
+}
+
+class MaterialBooksBuilder
+    implements Builder<MaterialBooks, MaterialBooksBuilder> {
+  _$MaterialBooks _$v;
+
+  ListBuilder<MaterialBook> _objects;
+  ListBuilder<MaterialBook> get objects =>
+      _$this._objects ??= new ListBuilder<MaterialBook>();
+  set objects(ListBuilder<MaterialBook> objects) => _$this._objects = objects;
+
+  MaterialBooksBuilder();
+
+  MaterialBooksBuilder get _$this {
+    final $v = _$v;
+    if ($v != null) {
+      _objects = $v.objects.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(MaterialBooks other) {
+    ArgumentError.checkNotNull(other, 'other');
+    _$v = other as _$MaterialBooks;
+  }
+
+  @override
+  void update(void Function(MaterialBooksBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$MaterialBooks build() {
+    _$MaterialBooks _$result;
+    try {
+      _$result = _$v ?? new _$MaterialBooks._(objects: objects.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'objects';
+        objects.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'MaterialBooks', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
   }
 }
 
@@ -466,9 +618,74 @@ class MaterialBookBuilder
 
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
 
-
 ```
 
+编写好之后就给 序列化器添加 插件
+
+```dart
+import 'package:built_value/serializer.dart';
+import 'package:built_value/standard_json_plugin.dart';
+import 'materialBook.dart';
+import 'package:built_collection/built_collection.dart';
+
+
+part 'serializers.g.dart';
+
+@SerializersFor(const[
+  MaterialBooks,
+  MaterialBook,
+])
+final Serializers serializers  =
+(_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
+```
+
+这里用的是`StandardJsonPlugin` 。默认的也可以使用
+
+> 因为built value的json格式不是标准的, 而是所有字段逗号分隔的. 用了`StandardJsonPlugin`之后就转换成了标准的JSON格式.
+
+
+调用 serializers.
+
+```dart
+import 'dart:async';
+import 'dart:convert';
+import 'package:shanbay_book_demo/materialBook.dart';
+
+import 'serializers.dart';
+import 'package:http/http.dart' as http;
+
+const BOOK_API =
+    "https://apiv3.shanbay.com/wordsapp/material_books?tag_names=%E5%9B%9B%E7%BA%A7";
+
+Future<MaterialBooks> getMaterialBooks() async {
+  final res = await http.get(Uri.parse(BOOK_API));
+  MaterialBooks materialBooks = serializers.deserializeWith(
+      MaterialBooks.serializer, json.decode(res.body));
+  print(materialBooks);
+  return materialBooks;
+}
+
+
+// 打印结果
+flutter: MaterialBooks {
+  objects=[MaterialBook {
+    id=odcxi,
+    coins=0,
+    iconUrl=https://media-image1.baydn.com/wordmaster_pub_image/tvbuvh/7e2398d03c75839c7cf3a561b16b0be6.f7d523801066b1361fb30cf71dba9edc.jpg?x-oss-process=image/quality,Q_80,
+    name=四级考纲词汇(完全版),
+  }, MaterialBook {
+    id=odihq,
+    coins=0,
+    iconUrl=https://media-image1.baydn.com/wordmaster_pub_image/verskb/dd78d6e102df08ad84436581c0987a87.f69ccc840779614f1073f38f530b7aa5.jpg?x-oss-process=image/quality,Q_80,
+    name=四级考纲词汇(精简版),
+  }, MaterialBook {
+    id=fxlze,
+    coins=0,
+    iconUrl=https://media-image1.baydn.com/wordmaster_pub_image/qayvad/607135b0de61e5607820c7b9b8dbd197.85c6515e085351bdff02d6fa8534c956.png?x-oss-process=image/quality,Q_80,
+    name=四级真题核心词汇书,
+  }],
+}
+```
 
 
 
