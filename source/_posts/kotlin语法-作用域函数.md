@@ -25,3 +25,44 @@ description: kotlin 作用域函数
 - 返回值：lambda 表达式结果
 
 可以理解成 let it do something。
+
+## also
+
+- 应用上下文方式 it
+- 返回值：上下文对象
+
+also do somethine。
+
+## apply
+
+- 应用上下文方式 this
+- 返回值： 上下文对象
+
+## with
+
+- 应用上下文方式 this
+- 返回值： lambda 表达式结果
+
+## run
+run 有两种情况
+
+### 作为扩展函数
+- 应用上下文方式 this
+- 返回值： lambda 表达式结果
+
+### 作为非扩展函数
+
+- 应用上下文方式 无
+- 返回值： lambda 表达式结果
+
+
+官方给了使用指南
+
+- 对一个非空（non-null）对象执行 lambda 表达式：let
+- 将表达式作为变量引入为局部作用域中：let
+- 对象配置：apply
+- 对象配置并且计算结果：run
+- 在需要表达式的地方运行语句：非扩展的 run
+- 附加效果：also
+- 一个对象的一组函数调用：with
+
